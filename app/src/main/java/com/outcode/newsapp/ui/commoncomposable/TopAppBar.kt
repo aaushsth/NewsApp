@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -30,18 +31,18 @@ import com.outcode.newsapp.R
 fun TopAppBar(@StringRes titleResource: Int, onThemeSwitch: () -> Unit) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth().height(48.dp)
             .background(Color.Blue),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
 
     ) {
+        WidthSpacer(8.dp)
         Text(
-            modifier = Modifier.padding(top = 20.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
             text = stringResource(id = titleResource),
             style = categoryTitleStyle
         )
-        Box(modifier = Modifier.padding(top = 24.dp, end = 8.dp)) {
+        Box() {
             ThemeSwitcher(onThemeSwitch = {
                 onThemeSwitch()
             })
@@ -52,19 +53,21 @@ fun TopAppBar(@StringRes titleResource: Int, onThemeSwitch: () -> Unit) {
 fun TopAppBarWithBack(@StringRes titleResource: Int, onBackPressed: () -> Unit) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth().height(48.dp)
             .background(Color.Blue),
-        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
 
     ) {
-        Box(modifier = Modifier.padding(top = 24.dp, end = 8.dp).clickable {
-            onBackPressed()
-        }) {
-           Icon(imageVector =Icons.Filled.ArrowBack , contentDescription ="bacK")
+        WidthSpacer(8.dp)
+
+        Box(modifier = Modifier
+            .clickable {
+                onBackPressed()
+            }) {
+           Icon(imageVector =Icons.Filled.ArrowBack , contentDescription ="bacK", tint = Color.White)
         }
+        WidthSpacer(20.dp)
         Text(
-            modifier = Modifier.padding(top = 20.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
             text = stringResource(id = titleResource),
             style = categoryTitleStyle
         )

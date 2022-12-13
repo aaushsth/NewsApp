@@ -22,13 +22,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.outcode.newsapp.R
+import com.outcode.newsapp.data.handler.loggerE
+import com.outcode.newsapp.data.response.Article
 import com.outcode.newsapp.style.articleTitleStyle
 import com.outcode.newsapp.style.dateTextStyle
 import com.outcode.newsapp.style.sourceTextStyle
-import com.outcode.newsapp.R
-import com.outcode.newsapp.data.response.Article
 import com.outcode.newsapp.ui.commoncomposable.*
+import com.outcode.newsapp.ui.navigation.MainScreens
+import com.outcode.newsapp.ui.navigation.SetNavGraph
 import com.outcode.newsapp.ui.news.NewsViewModel
 import com.outcode.newsapp.utils.getDateWithServerTimeStamp
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,20 +45,25 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
+            SetNavGraph(navController = navController, viewModel = viewModel)
 
-            Column {
-                TopAppBar(R.string.app_name, onThemeSwitch = {
-                   // onThemeSwitch()
-                })
-                NewsListUi(viewModel)
-
-            }
         }
     }
 }
 
 @Composable
-fun NewsListUi(viewModel: NewsViewModel) {
+fun HomeScreen(viewModel: NewsViewModel, navController: NavHostController) {
+    Column {
+        TopAppBar(R.string.app_name, onThemeSwitch = {
+            // onThemeSwitch()
+        })
+        NewsListUi(viewModel, navController)
+
+    }
+}
+
+@Composable
+fun NewsListUi(viewModel: NewsViewModel, navController: NavHostController) {
     val uiState = viewModel.activeNewsUiState.observeAsState().value
     uiState ?: return
     Surface(
@@ -83,7 +92,7 @@ fun NewsListUi(viewModel: NewsViewModel) {
             uiState.list?.isEmpty() == false -> {
                 LazyColumn() {
                     itemsIndexed(uiState.list) { index, item ->
-                        NewsList(item) {
+                        NewsList(viewModel, item, navController) {
                         }
                     }
                 }
@@ -94,7 +103,12 @@ fun NewsListUi(viewModel: NewsViewModel) {
 }
 
 @Composable
-fun NewsList(data: Article, onClick: () -> Unit) {
+fun NewsList(
+    viewModel: NewsViewModel,
+    data: Article,
+    navController: NavHostController,
+    onClick: () -> Unit
+) {
     Card(
         shape = RoundedCornerShape(10.dp),
         elevation = 1.dp,
@@ -102,15 +116,18 @@ fun NewsList(data: Article, onClick: () -> Unit) {
             .fillMaxWidth()
             .padding(10.dp)
             .background(Color.White)
-            .clickable {
-                onClick()
-            }
+
     ) {
         Box(
             modifier = Modifier
                 .padding(5.dp)
+
         ) {
-            Column(modifier = Modifier.clickable(onClick = { })) {
+            Column(modifier = Modifier.clickable(onClick = {
+                loggerE("click")
+                viewModel.setNewsDetail(data)
+                navController.navigate(MainScreens.DetailScreen.route)
+            })) {
                 Row(
                     modifier = Modifier,
                     verticalAlignment = Alignment.CenterVertically

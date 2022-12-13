@@ -6,13 +6,16 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.outcode.newsapp.R
 import com.outcode.newsapp.data.response.Article
+import com.outcode.newsapp.data.response.Source
 import com.outcode.newsapp.style.articleTitleStyle
 import com.outcode.newsapp.style.dateTextStyle
 import com.outcode.newsapp.style.sourceTextStyle
@@ -27,67 +30,68 @@ import com.outcode.newsapp.utils.getDateWithServerTimeStamp
  */
 
 @Composable
-fun DetailedNewsScreen(
-    article: Article
-) {
+fun DetailedNewsScreen(navHostController: NavHostController,viewModel: NewsViewModel) {
+   //  val  article: Article = Article("","","","", Source("",""),"","","")
+
+   val article = viewModel.newsDetail?:return
     Surface(
-        color = MaterialTheme.colors.background,
-        shape = RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp),
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(
-                start = 10.dp,
-                end = 10.dp,
-                bottom = 50.dp
-            )
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            TopAppBarWithBack(titleResource = R.string.app_name ) {
-
+        Column() {
+            TopAppBarWithBack(titleResource = R.string.app_name) {
+                navHostController.popBackStack()
             }
-            Text(
-                text = article.title,
-                style = articleTitleStyle.copy(
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold
-                ),
-            )
-            HeightSpacer(value = 4.dp)
-           Row {
-               Text(
-                   maxLines = 1,
-                   text = "By ${article.author + "on Updated "}",
-                   style = dateTextStyle.copy(
-                       color = Color.Black,
-                       fontWeight = FontWeight.Bold
-                   )
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .padding(20.dp)) {
 
-               )
-               article.publishedAt.getDateWithServerTimeStamp()?.let {
-                   Text(
-                       maxLines = 1,
-                       text = it,
-                       style = dateTextStyle.copy(
-                           color = Color.Black,
-                           fontWeight = FontWeight.Bold
-                       )
+                Text(
+                    text = article.title,
+                    style = articleTitleStyle.copy(
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold
+                    ),
+                )
+                HeightSpacer(value = 12.dp)
+                Row {
+                    Text(
+                        maxLines = 1,
+                        text = "By ${article.author + "on Updated "}",
+                        style = dateTextStyle.copy(
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
 
-                   )
-               }
-           }
-            RemoteImage(
-                url = article.urlToImage,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-            )
-            HeightSpacer(value = 4.dp)
-            Text(
-                text = article.content,
-                style = sourceTextStyle.copy(color = Color.Black),
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis
-            )
+                    )
+                    article.publishedAt.getDateWithServerTimeStamp()?.let {
+                        Text(
+                            maxLines = 1,
+                            text = it,
+                            style = dateTextStyle.copy(
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                        )
+                    }
+                }
+                HeightSpacer(value = 12.dp)
+
+                RemoteImage(
+                    url = article.urlToImage,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                )
+                HeightSpacer(value = 12.dp)
+                Text(
+                    text = article.content,
+                    style = sourceTextStyle.copy(color = Color.Black),
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
         }
+
+
     }
 }

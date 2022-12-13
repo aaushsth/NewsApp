@@ -1,8 +1,11 @@
 package com.outcode.newsapp.data.response
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class AllNewsResponse(
     @SerializedName("articles")
     var articles: List<Article>,
@@ -10,8 +13,9 @@ data class AllNewsResponse(
     var status: String,
     @SerializedName("totalResults")
     var totalResults: Int
-)
+):Parcelable
 
+@Parcelize
 data class Article(
     @SerializedName("author")
     var author: String?,
@@ -29,12 +33,13 @@ data class Article(
     var url: String,
     @SerializedName("urlToImage")
     var urlToImage: String?
-)
+):Parcelable
 
+@Parcelize
 data class Source(
     @SerializedName("id")
     var id: String,
     @SerializedName("name")
     var name: String
-)
+):Parcelable
 
