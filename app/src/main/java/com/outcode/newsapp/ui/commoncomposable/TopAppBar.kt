@@ -42,6 +42,7 @@ fun TopAppBar(@StringRes titleResource: Int, onThemeSwitch: () -> Unit) {
             text = stringResource(id = titleResource),
             style = categoryTitleStyle
         )
+
         Box() {
             ThemeSwitcher(onThemeSwitch = {
                 onThemeSwitch()
